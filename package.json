@@ -15,7 +15,7 @@
     "files": ["README.md", "LICENSE", "js"],
     "repository": {
         "type": "git",
-        "url": "https://github.com/typeduck/convig.git"
+        "url": "https://github.com/typeduck/linkto.git"
     },
     "dependencies": {
         "lodash": "^3.10.0"
