@@ -1,0 +1,33 @@
+{
+    "name": "linkto",
+    "version": "1.0.0",
+    "description": "express middleware to help create absolute links",
+    "main": "js/index.js",
+    "scripts": {
+        "prepublish": "./node_modules/.bin/coffee -o js -c src",
+        "pretest": "./node_modules/.bin/coffee -o js -c src",
+        "test": "./node_modules/.bin/mocha -R min js/test.js"
+    },
+    "keywords": [
+        "href",
+        "links"
+    ],
+    "files": ["README.md", "LICENSE", "js"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/typeduck/convig.git"
+    },
+    "dependencies": {
+        "lodash": "^3.10.0"
+    },
+    "devDependencies": {
+        "coffee-script": "^1.9.3",
+        "convig": "^1.2.0",
+        "express": "^4.13.0",
+        "mocha": "^2.2.5",
+        "should": "^7.0.1",
+        "supertest": "^1.0.1"
+    },
+    "author": "Ruquay K Calloway",
+    "license": "MIT"
+}
