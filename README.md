@@ -43,7 +43,7 @@ app.get("/some/path", function(req, res, next){
 });
 
 // query included in function call? those are always included
-app.get(/some/path", function(req, res, next){
+app.get("/some/path", function(req, res, next){
   var elsewhere = req.linkto("/other/path?goosebite=sister");
 });
 ```
