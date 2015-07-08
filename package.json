@@ -1,6 +1,6 @@
 {
     "name": "linkto",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "express middleware to help create absolute links",
     "main": "js/index.js",
     "scripts": {

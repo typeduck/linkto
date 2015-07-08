@@ -11,6 +11,7 @@ linkTo = require("./")
 handler = (req, res, next) ->
   res.set("x-there", req.linkTo("there"))
   res.set("x-back", req.linkTo("../back"))
+  res.set("x-base", req.linkTo("/base"))
   res.set("x-params", req.linkTo("params?a=A&b=B"))
   res.redirect(303, req.linkTo("quux"))
 
@@ -28,6 +29,7 @@ describe "default options", () ->
       .expect("location", "http://example.com/foo/bar/quux")
       .expect("x-there", "http://example.com/foo/bar/there")
       .expect("x-back", "http://example.com/foo/back")
+      .expect("x-base", "http://example.com/base")
       .expect("x-params", "http://example.com/foo/bar/params?a=A&b=B")
       .end(done)
   it "should honor reverse proxy headers", (done) ->
@@ -37,6 +39,7 @@ describe "default options", () ->
       .set("X-Forwarded-Path", "/basepath")
       .set("X-Forwarded-Proto", "https")
       .expect(303)
+      .expect("x-base", "https://example.com/basepath/base")
       .expect("location", "https://example.com/basepath/foo/bar/quux")
       .end(done)
   it "should prefer X-Forwarded-Host to Host header", (done) ->
@@ -61,6 +64,7 @@ describe "no proxy options", () ->
       .set("X-Forwarded-Path", "/all/your/base")
       .expect(303)
       .expect("location", "http://example.com/foo/bar/quux")
+      .expect("x-base", "http://example.com/base")
       .end(done)
 # Parameter options
 describe "parameter preservation true", () ->
@@ -137,15 +141,17 @@ describe "express router usage", () ->
       .end (err, res) ->
         res.headers["x-there"].should.equal("#{base}/foo/there")
         res.headers["x-back"].should.equal("#{base}/back")
+        res.headers["x-base"].should.equal("http://example.com/base")
         done(err)
   it "should correctly handle x-forwarded-path with router base", (done) ->
-    base = "http://example.com/nginx/frontend/routebase"
+    base = "http://example.com/nginx/frontend"
     supertest(app).get("/routebase/foo/bar")
       .set("host", "example.com")
       .set("x-forwarded-path", "/nginx/frontend")
       .expect(303)
-      .expect("location", "#{base}/foo/quux")
+      .expect("location", "#{base}/routebase/foo/quux")
+      .expect("x-base", "#{base}/base")
       .end (err, res) ->
-        res.headers["x-there"].should.equal("#{base}/foo/there")
-        res.headers["x-back"].should.equal("#{base}/back")
+        res.headers["x-there"].should.equal("#{base}/routebase/foo/there")
+        res.headers["x-back"].should.equal("#{base}/routebase/back")
         done(err)

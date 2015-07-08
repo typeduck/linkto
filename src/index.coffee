@@ -10,13 +10,17 @@ module.exports = (baseOpts = {}) ->
   return (req, res, next) ->
     proto = req.protocol # honors proxy trust
     baseUrl = req.baseUrl or ""
+    pathInsert = ""
     if req.app.get("trust proxy")
       hostname = req.headers["x-forwarded-host"] or req.headers.host
       baseUrl = (req.headers["x-forwarded-path"] or "") + baseUrl
+      pathInsert = req.headers["x-forwarded-path"] or ""
     else
       hostname = req.headers.host
     hrefFull = "#{proto}://#{hostname}#{baseUrl}#{req.path}"
     req.linkTo  = req.linkTo = (path, moreOpts = {}) ->
+      if path[0] is "/" and pathInsert?
+        path = pathInsert + path
       opts = _.assign({
         params: false
       }, baseOpts, moreOpts)
