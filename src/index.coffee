@@ -18,7 +18,7 @@ module.exports = (baseOpts = {}) ->
     else
       hostname = req.headers.host
     hrefFull = "#{proto}://#{hostname}#{baseUrl}#{req.path}"
-    req.linkTo  = req.linkTo = (path, moreOpts = {}) ->
+    req.linkto  = req.linkTo = (path, moreOpts = {}) ->
       if path[0] is "/" and pathInsert?
         path = pathInsert + path
       opts = _.assign({

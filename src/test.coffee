@@ -13,7 +13,7 @@ handler = (req, res, next) ->
   res.set("x-back", req.linkTo("../back"))
   res.set("x-base", req.linkTo("/base"))
   res.set("x-params", req.linkTo("params?a=A&b=B"))
-  res.redirect(303, req.linkTo("quux"))
+  res.redirect(303, req.linkto("quux"))
 
 # Default options testing
 describe "default options", () ->
