@@ -33,6 +33,11 @@ var opts = {
 opts = {
   params: ["a", "b"] // include URL parameters 'a' and 'b' from request
 };
+opts = {
+  params: function(k, v){
+    return /^a*b$/.test(k); // use a function called for each parameter
+  }
+};
 
 // pass options when creating middleware
 app.use(linkto(opts));

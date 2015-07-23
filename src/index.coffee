@@ -35,6 +35,9 @@ module.exports = (baseOpts = {}) ->
         query = _.assign(_.clone(req.query), query)
       else if Array.isArray(opts.params)
         query = _.assign(_.pick(req.query, opts.params), query)
+      else if "function" is typeof opts.params
+        predicate = (val, key) -> opts.params(key, val)
+        query = _.assign(_.pick(req.query, predicate), query)
       # Resolve the URL relative to origin URL
       url = URL.resolve(hrefFull, path)
       # Tack on any query items

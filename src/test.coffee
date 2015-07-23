@@ -125,6 +125,37 @@ describe "selective parameter preservation", () ->
           c: "Cheetah"
         }
         done()
+# Parameter options
+describe "functional parameter preservation", () ->
+  app = express()
+  app.set("trust proxy", true)
+  app.use(linkTo({
+    params: (k, v) -> /^keep/.test(k)
+  }))
+  app.get("/foo/bar/baz", handler)
+  it "should include ALL params for true", (done) ->
+    supertest(app).get("/foo/bar/baz?a=Ape&keepC=Cheetah")
+      .set("host", "example.com")
+      .expect(303)
+      .expect("location", "http://example.com/foo/bar/quux?keepC=Cheetah")
+      .end(done)
+  it "should merge parameters, preferring new URL", (done) ->
+    supertest(app).get("/foo/bar/baz?a=Ape&keepC=Cheetah&d=Duck")
+      .set("host", "example.com")
+      .expect(303)
+      .end (err, res) ->
+        return done(err) if err
+        # 'Location' header does not add own params, uses those given
+        URL.parse(res.headers['location'], true).query.should.eql {
+          keepC: "Cheetah"
+        }
+        # 'x-params' header adds own params named 'a' and 'b'
+        URL.parse(res.headers['x-params'], true).query.should.eql {
+          a: "A"
+          b: "B"
+          keepC: "Cheetah"
+        }
+        done()
 # testing when added onto a different base route!
 describe "express router usage", () ->
   app = express()
