@@ -186,3 +186,37 @@ describe "express router usage", () ->
         res.headers["x-there"].should.equal("#{base}/routebase/foo/there")
         res.headers["x-back"].should.equal("#{base}/routebase/back")
         done(err)
+# Testing the optional different starting points of absolute linking
+describe "absolute=host option", () ->
+  app = express()
+  app.set("trust proxy", true)
+  app.use(linkTo({absolute: "host"})) # Only use the host!
+  app.use("/routebase", router = express.Router())
+  router.get("/foo/bar", handler)
+
+  it "should correctly handle x-forwarded-path with router base", (done) ->
+    base = "http://example.com"
+    supertest(app).get("/routebase/foo/bar")
+      .set("host", "example.com")
+      .set("x-forwarded-path", "/nginx/frontend")
+      .expect(303)
+      .expect("x-base", "#{base}/base")
+      .end (err, res) ->
+        done(err)
+# Testing the optional different starting points of absolute linking
+describe "absolute=route option", () ->
+  app = express()
+  app.set("trust proxy", true)
+  app.use(linkTo({absolute: "route"})) # Confine absolute to route!
+  app.use("/routebase", router = express.Router())
+  router.get("/foo/bar", handler)
+
+  it "should correctly handle x-forwarded-path with router base", (done) ->
+    base = "http://example.com/nginx/frontend/routebase"
+    supertest(app).get("/routebase/foo/bar")
+      .set("host", "example.com")
+      .set("x-forwarded-path", "/nginx/frontend")
+      .expect(303)
+      .expect("x-base", "#{base}/base")
+      .end (err, res) ->
+        done(err)

@@ -12,6 +12,7 @@ app.get("/your/path/here", function(req, res, next){
 });
 ```
 
+
 ## Installation
 
 ```bash
@@ -23,6 +24,10 @@ $ npm install linkto
   - Can preserve URL parameters, all or selectively
   - Works behind reverse HTTP proxy AND locally
   - Can include path stripped by proxy when included in special header
+  - Can interpret absolute links as starting at:
+    - host: truly absolute
+    - proxy: absolute within app, honors proxy indication (default)
+    - route: absolute within current route (honors "trust proxy", too)
 
 ## Examples
 
@@ -37,6 +42,12 @@ opts = {
   params: function(k, v){
     return /^a*b$/.test(k); // use a function called for each parameter
   }
+};
+opts = {
+  absolute: "route" // absolute links are anchored to current route
+};
+opts = {
+  absolute: "host" // truly absolute links for domain
 };
 
 // pass options when creating middleware
